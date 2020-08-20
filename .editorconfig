@@ -1,20 +1,810 @@
-# EditorConfig is awesome: http://EditorConfig.org
-root = false
+//               Change these to whatever you want!
+                     var playerName = "Cubey";
+  var playerColor = color(random(255), random(255), random(255));
 
-[*]
-indent_style = tab
-indent_size = 4
-end_of_line = lf
-trim_trailing_whitespace = true
-insert_final_newline = false
-charset = utf-8
+//                          the code
 
-[*.{json,js,css,scss,yml,htm,html}]
-indent_style = space
-indent_size = 2
+//                          //===\\
+//                         ||{
 
-[*.{md,mdown,markdown}]
-trim_trailing_whitespace = false
-insert_final_newline = true
-indent_style = space
-indent_size = 4
+var input = [];
+
+
+keyPressed = function() {
+    input[keyCode] = true;
+};
+
+keyReleased = function() {
+    input[keyCode] = false;
+};
+
+textFont(createFont("Times New Roman"));
+
+var deaths = 0;
+
+var seconds = 0;
+var minutes = 0;
+
+var scene = "play";
+
+var LevelStatus = "playing";
+
+var l = 0;
+
+var levelMap = [
+    {
+        level: 1,
+        name: "Getting Started",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#         ^  ^         #",
+            "#       ########       #",
+            "#      ##########      #",
+            "#@    ############    $#",
+            "########################",
+        ],
+    },
+    {
+        level: 2,
+        name: "A Little Harder",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                     $#",
+            "#                     ##",
+            "#         ^^^###%%%%####",
+            "#@  ^^^#################",
+            "########################",
+        ],
+    },
+    {
+        level: 3,
+        name: "Leap of Faith",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#^                     #",
+            "##      #%             #",
+            "###     #%%            #",
+            "####   ^#%%            #",
+            "#      ##%%%           #",
+            "#     ###%%%%          #",
+            "#^   ####%%%%          #",
+            "##      #%%%%%         #",
+            "###     #%%%%%%        #",
+            "####   ^#%%%%%%        #",
+            "#      ##%%%%%%%       #",
+            "#     ###%%%%%%%%      #",
+            "#^   ####%%%%%%%%      #",
+            "##      #%%%%%%%%%     #",
+            "###     #%%%%%%%%%%    #",
+            "####   ^#%%%%%%%%%%    #",
+            "#      ##%%%%%%%%%%%   #",
+            "#     ###%%%%%%%%%%%%  #",
+            "#@   ####%%%%%%%%%%%% $#",
+            "########################",
+        ],
+    },
+    {
+        level: 4,
+        name: "Double Trouble",
+        map: [
+            "########################",
+            "#         $##         $#",
+            "#          ##          #",
+            "#         ###         ##",
+            "#          ##          #",
+            "#    ##    ##    ##    #",
+            "#          ##          #",
+            "##         ###         #",
+            "#    ##    ##    ##    #",
+            "#          ##          #",
+            "#         ###         ##",
+            "#    ##    ##    ##    #",
+            "#          ##          #",
+            "##         ###         #",
+            "#    ##    ##    ##    #",
+            "#          ##          #",
+            "#         ###         ##",
+            "#    ##    ##    ##    #",
+            "#          ##          #",
+            "##         ###         #",
+            "#    ##    ##    ##    #",
+            "#         ###         ##",
+            "#@         ##@         #",
+            "########################",
+        ],
+    },
+    {
+        level: 5,
+        name: "Almost a Mirror",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#               #     $#",
+            "#         #            #",
+            "#       #              #",
+            "#     #                #",
+            "#@  #      ^     ^     #",
+            "# #        #%%%%%#     #",
+            "########################",
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#            #         #",
+            "#        #             #",
+            "#   #                  #",
+            "#@            #%%%%%#  #",
+            "########################",
+        ],
+    },
+    {
+        level: 6,
+        name: "Going under",
+        map: [
+            "########################",
+            "#          ##          #",
+            "#          ##  $       #",
+            "#@         ##  #       #",
+            "######    ###          #",
+            "#%%%%%    ###      #   #",
+            "#%%%%%    ###          #",
+            "#%%%%     %##  #       #",
+            "#%%%%     %##          #",
+            "#%%%     %%##      #   #",
+            "#%%%     %%##          #",
+            "#%%     %%%##  #       #",
+            "#%%     %%%##          #",
+            "#%     %%%%##      #   #",
+            "#%     %%%%##          #",
+            "##    %%%%%##  #       #",
+            "##    %%%%%##          #",
+            "##    #######      #####",
+            "##    ########         #",
+            "##    #########        #",
+            "##    ##########       #",
+            "##    ###########      #",
+            "##    ############     #",
+            "##    #############    #",
+            "##                    ##",
+            "##                   ###",
+            "########################",
+        ],
+    },
+    /*{
+        level: 7,
+        name: "Parkour",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                    # #",
+            "#                   &  #",
+            "#                  ##  #",
+            "#                 #    #",
+            "#              #       #",
+            "#          #           #",
+            "#      #               #",
+            "#  #                   #",
+            "#    #   ^             #",
+            "#       ###&#          #",
+            "#                #     #",
+            "#          #           #",
+            "#     #                #",
+            "#          #           #",
+            "#                #     #",
+            "#                      #",
+            "#            #         #",
+            "#           ##         #",
+            "#     ^    ###         #",
+            "#@  #&#&#  ###          #",
+            "########################",
+        ],
+    },
+    {
+        level: 8,
+        name: "Coming soon",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "########################",
+        ],
+    },
+    {
+        level: 9,
+        name: "Coming soon",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "########################",
+        ],
+        ],
+    },
+    {
+        level: 10,
+        name: "Coming soon",
+        map: [
+            "########################",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "#                      #",
+            "########################",
+        ],
+    },*/
+];
+
+var levelText = function() {
+    
+    fill(0, 0, 0);
+    if      (l === 0) {
+        
+        text("Hello, " + playerName + "!\nArrow keys or WAD to move.\nJump over those spikes and get to the portal!", 300, 250);
+        
+    }
+    else if (l === 1) {
+        
+        text("Don't fall into that lava!", 300, 300);
+        
+    }
+    else if (l === 2) {
+        
+        text("That looks\nlike a far jump...", 125, 75);
+        
+    }
+    else if (l === 3) {
+        
+        text("Sometimes there may be\nmore than one player...", 140, 75);
+        
+    }
+    else if (l === 4) {
+        
+        text("If either player dies,\nthe other will die too!", 300, 100);
+        
+    }
+    else if (l === 5) {
+        
+        text("Wait... What?", 150, 75);
+        
+    }
+    
+};
+
+var rectCollide = function(obj1, obj2) {
+    return ((obj1.x + obj1.width > obj2.x) && (obj1.x < obj2.x + obj2.width) && (obj1.y + obj1.height > obj2.y) && (obj1.y < obj2.y + obj2.height));
+};
+
+// item functions
+{
+
+var Player = function(config) {
+    this.x = config.x;
+    this.y = config.y;
+    this.width = config.width || 25;
+    this.height = config.height || 25;
+    
+    this.yVelocity = 5;
+    this.yAcceleration = 0.2;
+    this.xVelocity = 0;
+};
+
+Player.prototype.moveX = function() {
+    if (input[LEFT] || input[65]) {
+        this.xVelocity = -3;
+    } else if (input[RIGHT] || input[68]) {
+        this.xVelocity = 3;
+    } else {
+        this.xVelocity = 0;
+    }
+    
+    this.x += this.xVelocity;
+};
+
+Player.prototype.moveY = function() {
+    if ((input[UP] || input[87]) && abs(this.yVelocity) < 0.1 && abs(this.yAcceleration) < 0.1) {
+        this.yVelocity = -5;
+    }
+    
+    if (this.yVelocity < 8) {
+        this.yAcceleration = 0.2;
+    } else {
+        this.yAcceleration = 0;
+    }
+    
+    this.y += this.yVelocity;
+    this.yVelocity += this.yAcceleration;
+};
+
+    
+
+Player.prototype.display = function() {
+    noStroke();
+    fill(playerColor);
+    rect(this.x, this.y, this.width, this.height);
+};
+
+var players = [];
+
+var Block = function(config) {
+    this.x = config.x;
+    this.y = config.y;
+    //Default size is 25
+    this.width = config.width || 25;
+    this.height = config.height || 25;
+};
+
+Block.prototype.collideX = function(object) {
+    if (rectCollide(this, object)) {
+        if (object.x > this.x) {
+            object.x = this.x + this.width;
+            object.xVelocity = 0;
+        } else {
+            object.x = this.x - object.width;
+            object.xVelocity = 0;
+        }
+    }
+};
+
+Block.prototype.collideY = function(object) {
+    if (rectCollide(this, object)) {
+        if (object.y > this.y) {
+            object.y = this.y + this.height;
+            object.yVelocity *= -1;
+        } else {
+            object.y = this.y - object.height;
+            object.yVelocity = 0;
+            object.yAcceleration = 0;
+        }
+    }
+};
+
+Block.prototype.display = function() {
+    fill(0, 0, 0);
+    noStroke();
+    rect(this.x, this.y, this.width, this.height);
+};
+
+var blocks = [];
+
+var Lava = function(config) {
+    this.x = config.x;
+    this.y = config.y;
+    this.width = config.width || 25;
+    this.height = config.height || 25;
+};
+
+Lava.prototype.display = function() {
+    fill(255, 50 + sin(frameCount * 2) * 50, 0);
+    noStroke();
+    rect(this.x, this.y, this.width, this.height);
+    
+};
+
+Lava.prototype.collide = function(object) {
+    if (rectCollide(this, object)) {
+        LevelStatus = "lost";
+    }
+};
+
+var lavas = [];
+
+var Spike = function(config) {
+    this.x = config.x;
+    this.y = config.y;
+    this.width = config.width || 25;
+    this.height = config.height || 25;
+};
+
+Spike.prototype.display = function() {
+    fill(59, 59, 59);
+    noStroke();
+    triangle(this.x, this.y + 25, this.x + 25, this.y + 25, this.x + 12.5, this.y);
+};
+
+Spike.prototype.collide = function(object) {
+    if (rectCollide(this, object)) {
+        LevelStatus = "lost";
+    }
+};
+
+var spikes = [];
+
+var USpike = function(config) {
+    this.x = config.x;
+    this.y = config.y;
+    this.width = config.width || 25;
+    this.height = config.height || 25;
+};
+
+USpike.prototype.display = function() {
+    fill(59, 59, 59);
+    noStroke();
+    triangle(this.x, this.y, this.x + 12.5, this.y + 25, this.x + 25, this.y);
+};
+
+USpike.prototype.collide = function(object) {
+    if (rectCollide(this, object)) {
+        LevelStatus = "lost";
+    }
+};
+
+var uspikes = [];
+
+var Portal = function(config) {
+    this.x = config.x;
+    this.y = config.y;
+    this.width = config.width || 25;
+    this.height = config.height || 25;
+};
+
+Portal.prototype.display = function() {
+    fill(0, 0, 0);
+    noStroke();
+    ellipse(this.x + 12.5, this.y + 12.5, this.width, this.height);
+    fill(219, 35, 35);
+    ellipse(this.x + 12.5, this.y + 12.5, this.width - 7, this.height - 7);
+    
+    fill(0, 0, 0);
+    ellipse(this.x + 12.5, this.y + 12.5, this.width - 14, this.height - 14);
+    
+    fill(7, 69, 224);
+    ellipse(this.x + 12, this.y + 12.5, this.width - 21, this.height - 21);
+    
+};
+
+Portal.prototype.collide = function(object) {
+    if (rectCollide(this, object)) {
+        if (l === 6) {
+            scene = "score";
+        } else {
+            LevelStatus = "won";
+        }
+    }
+};
+
+var portals = [];
+}
+
+var LevelRestart = function() {
+    players[l] = [];
+    blocks[l] = [];
+    lavas[l] = [];
+    portals[l] = [];
+    spikes[l] = [];
+    uspikes[l] = [];
+    for(var columnNum = 0; columnNum < levelMap[l].map.length; columnNum++) {
+        for(var rowNum = 0; rowNum < levelMap[l].map[columnNum].length; rowNum++) {
+            var Y = columnNum * 25;
+            var X = rowNum * 25;
+            switch (levelMap[l].map[columnNum][rowNum]) {
+                case "#":
+                    blocks[l].push(new Block({
+                        x: X,
+                        y: Y,
+                    }));
+                break;
+                case "@":
+                    players[l].push(new Player({
+                        x: X,
+                        y: Y,
+                    }));
+                break;
+                case "%":
+                    lavas[l].push(new Lava({
+                        x: X,
+                        y: Y,
+                    }));
+                break;
+                case "$":
+                    portals[l].push(new Portal({
+                        x: X,
+                        y: Y,
+                    }));
+                break;
+                case "^":
+                    spikes[l].push(new Spike({
+                        x: X,
+                        y: Y,
+                    }));
+                break;
+                case "!":
+                    uspikes[l].push(new USpike({
+                        x: X,
+                        y: Y,
+                    }));
+                break;
+            }
+        }
+    }
+};
+
+LevelRestart();
+
+var scoreGame = function() {
+    
+    seconds += 1/this.__frameRate;
+    if (round(seconds) >= 60) {
+        
+        minutes++;
+        seconds -= 60;
+        
+    }
+    
+    if (LevelStatus === "lost") {
+        LevelRestart();
+        LevelStatus = "playing";
+        deaths++;
+    }
+    else if (LevelStatus === "won") {
+        l++;
+        LevelRestart();
+        LevelStatus = "playing";
+    }
+    
+    // tons of for loops
+    {
+        
+        // display
+        for (var blockNum  = 0;
+            blockNum < blocks[l].length;
+            blockNum++)
+        {
+            blocks[l][blockNum].display();
+        }
+        for (var lavaNum   = 0;
+            lavaNum < lavas[l].length;
+            lavaNum++)
+        {
+            lavas[l][lavaNum].display();
+        }
+        for (var portalNum = 0;
+            portalNum < portals[l].length;
+            portalNum++)
+        {
+            portals[l][portalNum].display();
+        }
+        for (var spikeNum  = 0;
+            spikeNum < spikes[l].length;
+            spikeNum++)
+        {
+            spikes[l][spikeNum].display();
+        }
+        for (var uspikeNum = 0;
+            uspikeNum < uspikes[l].length;
+            uspikeNum++)
+        {
+            uspikes[l][uspikeNum].display();
+                }
+        for (var playerNum = 0;
+            playerNum < players[l].length;
+            playerNum++)
+        {
+            players[l][playerNum].display();
+        }
+        for (var playerNum = 0;
+            playerNum  < players[l].length;
+            playerNum++)
+        {
+            players[l][playerNum].moveX();
+        }
+        
+        // X collisions
+        for (var blockNum  = 0;
+            blockNum < blocks[l].length;
+            blockNum++)
+        {
+            for (var playerNum = 0;
+                playerNum < players[l].length;
+                playerNum++)
+                {
+                    blocks[l][blockNum].collideX(players[l][playerNum]);
+                }
+        }
+        for (var lavaNum   = 0;
+            lavaNum < lavas[l].length;
+            lavaNum++)
+        {
+            for (var playerNum = 0;
+                playerNum < players[l].length;
+                playerNum++)
+            {
+                lavas[l][lavaNum].collide(players[l][playerNum]);
+            }
+        }
+        for (var portalNum = 0;
+            portalNum < portals[l].length;
+            portalNum++)
+        {
+            for (var playerNum = 0;
+                playerNum < players[l].length;
+                playerNum++)
+            {
+                portals[l][portalNum].collide(players[l][playerNum]);
+            }
+        }
+        for (var spikeNum  = 0;
+            spikeNum < spikes[l].length;
+            spikeNum++)
+        {
+            for (var playerNum = 0;
+                playerNum < players[l].length;
+                playerNum++)
+            {
+                spikes[l][spikeNum].collide(players[l][playerNum]);
+            }
+        }
+        for (var uspikeNum = 0;
+            uspikeNum < uspikes[l].length;
+            uspikeNum++)
+        {
+            for (var playerNum = 0;
+                playerNum < players[l].length;
+                playerNum++)
+            {
+                uspikes[l][uspikeNum].collide(players[l][playerNum]);
+            }
+        }
+        for (var playerNum = 0;
+            playerNum < players[l].length;
+            playerNum++)
+        {
+            players[l][playerNum].moveY();
+        }
+        
+        // Y collisions
+        for (var blockNum  = 0;
+            blockNum < blocks[l].length;
+            blockNum++)
+        {
+            for (var playerNum = 0;
+                playerNum < players[l].length;
+                playerNum++)
+            {
+                blocks[l][blockNum].collideY(players[l][playerNum]);
+            }
+        }
+        
+    }
+    
+    fill(255, 255, 255);
+    textSize(20);
+    textAlign(CENTER);
+    text("Deaths: " + deaths, 150, 20);
+    text("Level " + levelMap[l].level + ": " + levelMap[l].name, 300, 594);
+    text("Time: " + minutes + " minutes " + round(seconds) + " seconds", 450, 20);
+};
+
+var scoreScene = function() {
+    
+    var score = (1250 - ((deaths * 25) + (minutes * 60) + (round(seconds))));
+    
+    fill(0, 0, 0);
+    textSize(50);
+    text("Congratulations! You won!", 300, 250);
+    textSize(30);
+    text("Score: " + score + "\nSpin-off to get on the leaderboard!", 300, 350);
+    
+};
+
+draw = function() {
+    
+    background(255, 255, 255);
+    
+    switch (scene) {
+        
+        case "play":
+            scoreGame();
+            levelText();
+        break;
+        case "score":
+            scoreScene();
+        
+    }
+};
+
+//                                  }||
+//                          \\===//
